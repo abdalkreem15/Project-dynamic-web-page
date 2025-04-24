@@ -273,4 +273,101 @@ section.active .landing__container::after {
     }
 }
 
-/* TODO: Add styles for Comments section and form */
+/* ---- Comments Section and Form Styles ---- */
+
+/* Comments Section specific styles */
+#section-comments .landing__container {
+    text-align: left; /* Ensure text is left-aligned even if it's an even section */
+    margin-left: auto; /* Center the container */
+    margin-right: auto; /* Center the container */
+}
+
+/* Form Styles */
+.comment-form {
+    display: grid; /* Use grid for layout */
+    gap: 15px; /* Space between form elements */
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.comment-form label {
+    font-weight: bold;
+    display: block; /* Make labels block elements */
+    margin-bottom: 5px;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form textarea {
+    width: 100%; /* Make inputs fill the container */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in element's total width */
+    font-family: 'Merriweather', serif; /* Use the page font */
+    font-size: 1em;
+}
+
+.comment-form textarea {
+    resize: vertical; /* Allow vertical resizing */
+}
+
+.comment-form button[type="submit"] {
+    background-color: #2015ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.comment-form button[type="submit"]:hover {
+    background-color: #171a53;
+}
+
+/* Error Message Style */
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+    display: none; /* Hidden by default, shown by JS */
+}
+
+/* Comments Display Area Styles */
+.comments-display {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.comments-display h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #b181ff; /* Match heading style */
+    padding-bottom: 5px;
+}
+
+/* Individual Comment Styles */
+.comment {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.comment-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2015ff; /* Style author name */
+}
+
+.comment-text {
+    margin-bottom: 0;
+}
