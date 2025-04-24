@@ -1,120 +1,6 @@
+// Wait for the DOM to be fully loaded before running the script
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Task 1: Find all of the sections
-    // Select all elements with the tag 'section' and store them in a NodeList (which is array-like)
-    const sections = document.querySelectorAll('section');
-
-
-    // Task 2: Build the navigation bar
-    // Find the empty ul element where the navigation links will be added
-    const navList = document.getElementById('navbar__list');
-
-    // Iterate through each section found
-    sections.forEach(section => {
-        // Get the id and the data-nav attribute from the current section
-        const sectionId = section.id;
-        const sectionNav = section.dataset.nav; // .dataset gives access to data attributes
-
-        // Create a new list item (<li>)
-        const listItem = document.createElement('li');
-
-        // Create a new anchor tag (<a>)
-        const anchor = document.createElement('a');
-        // Set the href attribute to link to the section's id
-        anchor.href = `#${sectionId}`;
-        // Set the text content of the anchor to the value of the data-nav attribute
-        anchor.textContent = sectionNav;
-        // Add the 'menu__link' class for styling (based on your CSS)
-        anchor.classList.add('menu__link');
-        // Add a class for future use if needed, like 'nav-link'
-        anchor.classList.add('nav-link');
-
-
-        // Append the anchor tag to the list item
-        listItem.appendChild(anchor);
-
-        // Append the list item to the navigation list (the ul element)
-        navList.appendChild(listItem);
-    });
-    // step 3: Add Smooth Scrolling
-
-    // Task 1: Add an event listener to the nav bar items
-    // select all the a tags that were just created in the navlist
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', function (event) {
-            // Task 2: Override any default behavior
-            // Prevent the default jump to the anchor link target
-            event.preventDefault();
-
-            // Task 3: Add a smooth scrolling method to your listener function
-            // Get the href attribute from the clicked link (e.g., '#section1')
-            const href = this.getAttribute('href');
-            // Extract the section ID by removing the '#' character
-            const targetId = href.substring(1);
-
-            // Find the corresponding section element using its ID
-            const targetSection = document.getElementById(targetId);
-
-            // Use scrollIntoView() with the 'smooth' behavior option
-            if (targetSection) {
-                targetSection.scrollIntoView({
-                    behavior: 'smooth' // Enable smooth scrolling
-                });
-            }
-        });
-    });
-
-    // Step 4: Add an Active State
-
-    // Task 1 & 2 combined: Function to determine if a section is in the "active" window
-    // A section is considered active if its top is within the upper half of the viewport
-    // and its bottom is still visible.
-    function isSectionInView(section) {
-        const viewportHeight = window.innerHeight;
-        const rect = section.getBoundingClientRect();
-        const rectTop = rect.top;
-        const rectBottom = rect.bottom;
-
-        // Check if the top of the section is above the middle of the viewport
-        // AND the bottom of the section is below the very top of the viewport.
-        // This means the section is visible and its top edge is in the upper half of the screen.
-        return rectTop < viewportHeight / 2 && rectBottom > 0;
-    }
-
-    // Task 3 & 4 combined: Write a function to add/remove a class and create an event listener
-    function setActiveSection() {
-        sections.forEach(section => {
-            // Get the corresponding navigation link for this section
-            const sectionId = section.id;
-            const correspondingNavLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-
-            if (isSectionInView(section)) {
-                // Add 'active' class to the section if it's in view
-                section.classList.add('active');
-                // Optional: Add an active class to the corresponding nav link
-                if (correspondingNavLink) {
-                    correspondingNavLink.classList.add('active-nav'); // You might need to add CSS for '.active-nav'
-                }
-            } else {
-                // Remove 'active' class from the section if it's not in view
-                section.classList.remove('active');
-                // Optional: Remove active class from the corresponding nav link
-                if (correspondingNavLink) {
-                    correspondingNavLink.classList.remove('active-nav');
-                }
-            }
-        });
-    }
-
-    // Create an event listener to run the function when the user scrolls the page
-    window.addEventListener('scroll', setActiveSection);
-
-    // Optional: Run the function once on page load to set the initial active section
-    setActiveSection();
-
-    // Step 5: Add comment section
     // Select the main element to append new sections
     const mainElement = document.querySelector('main');
 
@@ -208,31 +94,147 @@ document.addEventListener('DOMContentLoaded', function () {
     // Append the new comments section to the main element
     mainElement.appendChild(commentSection);
 
-    // 3: Use JavaScript to append the comments to the page ---
+
+    // --- Navigation Bar Building ---
+    // Select ALL sections, including the dynamically added comment section
+    const sections = document.querySelectorAll('section');
+    const navList = document.getElementById('navbar__list');
+
+    // Clear existing nav items before rebuilding (important if script runs multiple times)
+    navList.innerHTML = '';
+
+    // Iterate through each section and build the navigation links
+    sections.forEach(section => {
+        const sectionId = section.id;
+        const sectionNav = section.dataset.nav; // Get text from data-nav attribute
+        const listItem = document.createElement('li');
+        const anchor = document.createElement('a');
+        anchor.href = `#${sectionId}`; // Link to the section ID
+        anchor.textContent = sectionNav; // Set link text
+        anchor.classList.add('menu__link'); // Add existing menu link style
+        anchor.classList.add('nav-link'); // Add a class for easier selection later
+        listItem.appendChild(anchor);
+        navList.appendChild(listItem); // Append list item to the navigation list
+    });
+
+    // --- Smooth Scrolling ---
+    // Select all the navigation anchor links that were just created
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Add a click event listener to each navigation link
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent the default jump to the anchor link target
+
+            // Get the target section's ID from the link's href attribute
+            const href = this.getAttribute('href');
+            const targetId = href.substring(1); // Remove the '#' character
+
+            // Find the corresponding section element by its ID
+            const targetSection = document.getElementById(targetId);
+
+            // If the target section exists, scroll to it smoothly
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth' // Enable smooth scrolling animation
+                });
+            }
+        });
+    });
+
+
+    // --- Active State ---
+
+    // Function to determine if a section is currently in the viewport
+    // A section is considered active if its top edge is within the upper half of the viewport
+    // AND its bottom edge is still visible (below the very top of the viewport).
+    function isSectionInView(section) {
+        const viewportHeight = window.innerHeight;
+        const rect = section.getBoundingClientRect();
+        const rectTop = rect.top;
+        const rectBottom = rect.bottom;
+
+        // Check if the top of the section is above the middle of the viewport
+        // AND the bottom of the section is below the very top of the viewport.
+        return rectTop < viewportHeight / 2 && rectBottom > 0;
+    }
+
+    // Function to add/remove the 'active' class based on section visibility
+    function setActiveSection() {
+        // Re-select sections here as well, in case sections are added/removed dynamically
+        const currentSections = document.querySelectorAll('section');
+
+        currentSections.forEach(section => {
+            const sectionId = section.id;
+            // Find the corresponding navigation link for this section
+            const correspondingNavLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+
+            if (isSectionInView(section)) {
+                // Add 'active' class to the section if it's in view
+                section.classList.add('active');
+                // Add 'active-nav' class to the corresponding nav link
+                if (correspondingNavLink) {
+                    correspondingNavLink.classList.add('active-nav');
+                }
+            } else {
+                // Remove 'active' class from the section if it's not in view
+                section.classList.remove('active');
+                // Remove 'active-nav' class from the corresponding nav link
+                if (correspondingNavLink) {
+                    correspondingNavLink.classList.remove('active-nav');
+                }
+            }
+        });
+
+        // Ensure only one nav link is active at a time (optional, but good practice)
+        // This loop might be redundant if the above logic correctly handles removal,
+        // but can act as a fallback or for different active state definitions.
+        const allNavLinks = document.querySelectorAll('.nav-link');
+        allNavLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
+
+            // Check if the linked section is currently in view
+            if (targetSection && isSectionInView(targetSection)) {
+                link.classList.add('active-nav');
+            } else {
+                link.classList.remove('active-nav');
+            }
+        });
+    }
+
+    // Create an event listener to run the function when the user scrolls the page
+    window.addEventListener('scroll', setActiveSection);
+
+    // Run the function once on page load to set the initial active section
+    setActiveSection();
+
+
+    // --- Comment Form Logic ---
 
     // Add event listener for form submission
-    commentForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+    commentForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission (page reload)
 
-        // Get input values
-        const name = nameInput.value.trim(); // Use trim() to remove leading/trailing whitespace
+        // Get input values and trim whitespace
+        const name = nameInput.value.trim();
         const email = emailInput.value.trim();
         const comment = commentTextarea.value.trim();
 
-        // Basic Validation
+        // Basic Validation: Check if fields are empty
         if (name === '' || email === '' || comment === '') {
             errorMessage.textContent = 'Please fill in all fields.';
             errorMessage.style.display = 'block'; // Show error message
-            return; // Stop the function
+            return; // Stop the function if validation fails
         }
 
-        // Simple email format validation (checks for '@')
+        // Simple Email Format Validation: Check if email includes '@'
         if (!email.includes('@')) {
-             errorMessage.textContent = 'Please enter a valid email address.';
-             errorMessage.style.display = 'block';
-             return;
+            errorMessage.textContent = 'Please enter a valid email address.';
+            errorMessage.style.display = 'block';
+            return; // Stop the function if validation fails
         }
-
 
         // If validation passes, clear error message
         errorMessage.style.display = 'none';
@@ -240,13 +242,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Create a new element to display the comment
         const newComment = document.createElement('div');
-        newComment.classList.add('comment'); // Class for styling individual comments
+        newComment.classList.add('comment'); // Add class for styling individual comments
 
+        // Create elements for author, email, and comment text
         const commentAuthor = document.createElement('p');
         commentAuthor.classList.add('comment-author');
         commentAuthor.textContent = `Name: ${name}`; // Display name
 
-        const commentEmail = document.createElement('p'); // Create paragraph for email
+        const commentEmail = document.createElement('p');
         commentEmail.classList.add('comment-email'); // Add class for styling (optional)
         commentEmail.textContent = `Email: ${email}`; // Display email
 
@@ -256,15 +259,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Append the author, email, and text elements to the new comment div
         newComment.appendChild(commentAuthor);
-        newComment.appendChild(commentEmail); // Append the email element
+        newComment.appendChild(commentEmail);
         newComment.appendChild(commentText);
 
+        // Append the new comment div to the comments display area
+        commentsDisplay.appendChild(newComment);
 
-        // Append the new comment div (now containing author, email, and text) to the comments display area
-        commentsDisplay.appendChild(newComment); // This line appends the comment
-
-        // Clear the form input fields
-        commentForm.reset(); // A convenient method to reset the form
+        // Clear the form input fields using the form.reset() method
+        commentForm.reset();
 
         // Optional: Scroll to the comments section after submitting a comment
         commentSection.scrollIntoView({ behavior: 'smooth' });
