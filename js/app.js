@@ -1,5 +1,5 @@
 // Wait for the DOM to be fully loaded before running the script
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
 
     // Select the main element to append new sections
     const mainElement = document.querySelector('main');
@@ -8,13 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Task 1: Create a Comments section on the page dynamically
     const commentSection = document.createElement('section');
     commentSection.id = 'section-comments'; // Unique ID for the comments section
-    commentSection.dataset.nav = 'Comments'; // Navigation text
+    // FIX: Match the data-nav attribute to the actual section heading text
+    commentSection.dataset.nav = 'Leave a Comment'; // Navigation text now matches heading
 
     const commentContainer = document.createElement('div');
     commentContainer.classList.add('landing__container'); // Use existing container style
 
     const commentHeading = document.createElement('h2');
-    commentHeading.textContent = 'Leave a Comment';
+    commentHeading.textContent = 'Leave a Comment'; // This is the section heading
 
     // Task 2: Add a comment form
     const commentForm = document.createElement('form');
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const listItem = document.createElement('li');
         const anchor = document.createElement('a');
         anchor.href = `#${sectionId}`; // Link to the section ID
-        anchor.textContent = sectionNav; // Set link text
+        anchor.textContent = sectionNav; // Set link text (now matches data-nav)
         anchor.classList.add('menu__link'); // Add existing menu link style
         anchor.classList.add('nav-link'); // Add a class for easier selection later
         listItem.appendChild(anchor);
@@ -123,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add a click event listener to each navigation link
     navLinks.forEach(link => {
-        link.addEventListener('click', function (event) {
+        link.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default jump to the anchor link target
 
             // Get the target section's ID from the link's href attribute
@@ -172,36 +173,35 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isSectionInView(section)) {
                 // Add 'active' class to the section if it's in view
                 section.classList.add('active');
-                // Add 'active-nav' class to the corresponding nav link
-                if (correspondingNavLink) {
-                    correspondingNavLink.classList.add('active-nav');
-                }
+                 // Add 'active-nav' class to the corresponding nav link
+                 if (correspondingNavLink) {
+                     correspondingNavLink.classList.add('active-nav');
+                 }
             } else {
                 // Remove 'active' class from the section if it's not in view
                 section.classList.remove('active');
-                // Remove 'active-nav' class from the corresponding nav link
-                if (correspondingNavLink) {
-                    correspondingNavLink.classList.remove('active-nav');
-                }
+                 if (correspondingNavLink) {
+                     correspondingNavLink.classList.remove('active-nav');
+                 }
             }
         });
 
-        // Ensure only one nav link is active at a time (optional, but good practice)
-        // This loop might be redundant if the above logic correctly handles removal,
-        // but can act as a fallback or for different active state definitions.
-        const allNavLinks = document.querySelectorAll('.nav-link');
-        allNavLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            const targetId = href.substring(1);
-            const targetSection = document.getElementById(targetId);
+         // Ensure only one nav link is active at a time (optional, but good practice)
+         // This loop might be redundant if the above logic correctly handles removal,
+         // but can act as a fallback or for different active state definitions.
+         const allNavLinks = document.querySelectorAll('.nav-link');
+         allNavLinks.forEach(link => {
+             const href = link.getAttribute('href');
+             const targetId = href.substring(1);
+             const targetSection = document.getElementById(targetId);
 
-            // Check if the linked section is currently in view
-            if (targetSection && isSectionInView(targetSection)) {
-                link.classList.add('active-nav');
-            } else {
-                link.classList.remove('active-nav');
-            }
-        });
+             // Check if the linked section is currently in view
+             if (targetSection && isSectionInView(targetSection)) {
+                 link.classList.add('active-nav');
+             } else {
+                 link.classList.remove('active-nav');
+             }
+         });
     }
 
     // Create an event listener to run the function when the user scrolls the page
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Comment Form Logic ---
 
     // Add event listener for form submission
-    commentForm.addEventListener('submit', function (event) {
+    commentForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission (page reload)
 
         // Get input values and trim whitespace
@@ -231,9 +231,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Simple Email Format Validation: Check if email includes '@'
         if (!email.includes('@')) {
-            errorMessage.textContent = 'Please enter a valid email address.';
-            errorMessage.style.display = 'block';
-            return; // Stop the function if validation fails
+             errorMessage.textContent = 'Please enter a valid email address.';
+             errorMessage.style.display = 'block';
+             return; // Stop the function if validation fails
         }
 
         // If validation passes, clear error message
