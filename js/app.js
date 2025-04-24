@@ -1,15 +1,19 @@
 // Wait for the DOM to be fully loaded before running the script
 document.addEventListener('DOMContentLoaded', function() {
 
+    // --- DOM Elements ---
     // Select the main element to append new sections
     const mainElement = document.querySelector('main');
+    // Find the empty ul element where the navigation links will be added
+    const navList = document.getElementById('navbar__list');
 
-    // --- Step 5: Add a Comment Form ---
-    // Task 1: Create a Comments section on the page dynamically
+
+    // --- Dynamic Comments Section Creation ---
+    // Create the comments section dynamically
     const commentSection = document.createElement('section');
     commentSection.id = 'section-comments'; // Unique ID for the comments section
-    // FIX: Match the data-nav attribute to the actual section heading text
-    commentSection.dataset.nav = 'Leave a Comment'; // Navigation text now matches heading
+    // Match the data-nav attribute to the actual section heading text for navigation
+    commentSection.dataset.nav = 'Leave a Comment'; // Navigation text
 
     const commentContainer = document.createElement('div');
     commentContainer.classList.add('landing__container'); // Use existing container style
@@ -17,12 +21,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentHeading = document.createElement('h2');
     commentHeading.textContent = 'Leave a Comment'; // This is the section heading
 
-    // Task 2: Add a comment form
+    // Create the comment form elements
     const commentForm = document.createElement('form');
     commentForm.id = 'comment-form'; // ID for the form
     commentForm.classList.add('comment-form'); // Class for styling
 
-    // Name Input
     const nameLabel = document.createElement('label');
     nameLabel.setAttribute('for', 'name');
     nameLabel.textContent = 'Name:';
@@ -32,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
     nameInput.name = 'name';
     nameInput.required = true; // Make name required
 
-    // Email Input
     const emailLabel = document.createElement('label');
     emailLabel.setAttribute('for', 'email');
     emailLabel.textContent = 'Email:';
@@ -42,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
     emailInput.name = 'email';
     emailInput.required = true; // Make email required
 
-    // Comment Input (Textarea)
     const commentLabel = document.createElement('label');
     commentLabel.setAttribute('for', 'comment');
     commentLabel.textContent = 'Comment:';
@@ -52,17 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
     commentTextarea.rows = 4;
     commentTextarea.required = true; // Make comment required
 
-    // Submit Button
     const submitButton = document.createElement('button');
     submitButton.type = 'submit';
     submitButton.textContent = 'Post Comment';
 
-    // Error Message Area
+    // Error Message Area for form validation
     const errorMessage = document.createElement('p');
     errorMessage.id = 'error-message';
-    errorMessage.classList.add('error-message'); // Class for styling
-    errorMessage.style.color = 'red'; // Basic inline style, can be moved to CSS
-    errorMessage.style.display = 'none'; // Hide initially
+    errorMessage.classList.add('error-message'); // Class for styling and hiding/showing
+
 
     // Comments Display Area
     const commentsDisplay = document.createElement('div');
@@ -74,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     commentsDisplay.appendChild(commentsHeading);
 
 
-    // Append form elements to the form
+    // Assemble the comment form
     commentForm.appendChild(nameLabel);
     commentForm.appendChild(nameInput);
     commentForm.appendChild(emailLabel);
@@ -84,12 +83,10 @@ document.addEventListener('DOMContentLoaded', function() {
     commentForm.appendChild(submitButton);
     commentForm.appendChild(errorMessage); // Add error message area to form
 
-    // Append heading, form, and comments display to the container
+    // Assemble the comments section
     commentContainer.appendChild(commentHeading);
     commentContainer.appendChild(commentForm);
     commentContainer.appendChild(commentsDisplay);
-
-    // Append the container to the section
     commentSection.appendChild(commentContainer);
 
     // Append the new comments section to the main element
@@ -99,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Navigation Bar Building ---
     // Select ALL sections, including the dynamically added comment section
     const sections = document.querySelectorAll('section');
-    const navList = document.getElementById('navbar__list');
 
     // Clear existing nav items before rebuilding (important if script runs multiple times)
     navList.innerHTML = '';
@@ -111,12 +107,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const listItem = document.createElement('li');
         const anchor = document.createElement('a');
         anchor.href = `#${sectionId}`; // Link to the section ID
-        anchor.textContent = sectionNav; // Set link text (now matches data-nav)
+        anchor.textContent = sectionNav; // Set link text (matches data-nav)
         anchor.classList.add('menu__link'); // Add existing menu link style
         anchor.classList.add('nav-link'); // Add a class for easier selection later
         listItem.appendChild(anchor);
         navList.appendChild(listItem); // Append list item to the navigation list
     });
+
 
     // --- Smooth Scrolling ---
     // Select all the navigation anchor links that were just created
@@ -161,9 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to add/remove the 'active' class based on section visibility
+    // Also updates the active state of the corresponding navigation link.
     function setActiveSection() {
-        // Re-select sections here as well, in case sections are added/removed dynamically
+        // Re-select sections in case the DOM structure changes after initial load
         const currentSections = document.querySelectorAll('section');
+        const allNavLinks = document.querySelectorAll('.nav-link'); // Re-select nav links
 
         currentSections.forEach(section => {
             const sectionId = section.id;
@@ -173,35 +172,34 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isSectionInView(section)) {
                 // Add 'active' class to the section if it's in view
                 section.classList.add('active');
-                 // Add 'active-nav' class to the corresponding nav link
-                 if (correspondingNavLink) {
-                     correspondingNavLink.classList.add('active-nav');
-                 }
+                // Add 'active-nav' class to the corresponding nav link
+                if (correspondingNavLink) {
+                    correspondingNavLink.classList.add('active-nav');
+                }
             } else {
                 // Remove 'active' class from the section if it's not in view
                 section.classList.remove('active');
-                 if (correspondingNavLink) {
-                     correspondingNavLink.classList.remove('active-nav');
-                 }
+                // Remove 'active-nav' class from the corresponding nav link
+                if (correspondingNavLink) {
+                    correspondingNavLink.classList.remove('active-nav');
+                }
             }
         });
 
-         // Ensure only one nav link is active at a time (optional, but good practice)
-         // This loop might be redundant if the above logic correctly handles removal,
-         // but can act as a fallback or for different active state definitions.
-         const allNavLinks = document.querySelectorAll('.nav-link');
-         allNavLinks.forEach(link => {
-             const href = link.getAttribute('href');
-             const targetId = href.substring(1);
-             const targetSection = document.getElementById(targetId);
+        // Optional: Ensure only one nav link is active at a time
+        // This loop can help ensure only the truly active section's link is highlighted.
+        allNavLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
 
-             // Check if the linked section is currently in view
-             if (targetSection && isSectionInView(targetSection)) {
-                 link.classList.add('active-nav');
-             } else {
-                 link.classList.remove('active-nav');
-             }
-         });
+            // Check if the linked section is currently in view
+            if (targetSection && isSectionInView(targetSection)) {
+                link.classList.add('active-nav');
+            } else {
+                link.classList.remove('active-nav');
+            }
+        });
     }
 
     // Create an event listener to run the function when the user scrolls the page
@@ -225,19 +223,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Basic Validation: Check if fields are empty
         if (name === '' || email === '' || comment === '') {
             errorMessage.textContent = 'Please fill in all fields.';
-            errorMessage.style.display = 'block'; // Show error message
+            // Use class to show error message (style defined in CSS)
+            errorMessage.classList.add('show-error');
             return; // Stop the function if validation fails
         }
 
         // Simple Email Format Validation: Check if email includes '@'
         if (!email.includes('@')) {
-             errorMessage.textContent = 'Please enter a valid email address.';
-             errorMessage.style.display = 'block';
-             return; // Stop the function if validation fails
+            errorMessage.textContent = 'Please enter a valid email address.';
+            // Use class to show error message (style defined in CSS)
+            errorMessage.classList.add('show-error');
+            return; // Stop the function if validation fails
         }
 
         // If validation passes, clear error message
-        errorMessage.style.display = 'none';
+        // Use class to hide error message
+        errorMessage.classList.remove('show-error');
         errorMessage.textContent = ''; // Clear error text
 
         // Create a new element to display the comment
